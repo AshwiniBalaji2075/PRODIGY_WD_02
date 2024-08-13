@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOPWATCH</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgb(202, 237, 106);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stopwatch {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .controls button {
+            font-size: 2em;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #start { background-color: black; color: white; }
+        #pause { background-color: black; color: white; }
+        #reset { background-color: black; color: white; }
+        #lap { background-color: black; color: white; }
+
+        .laps {
+            margin-top: 20px;
+        }
+
+        .laps ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .laps li {
+            background: #f0f0f0;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><b>STOPWATCH</h1>
+        <div class="stopwatch">
+            <span id="display">00:00:00</span>
+        </div>
+        <div class="controls">
+            <button id="start"><b>START</b></button>
+            <button id="pause"><b>PAUSE</b></button>
+            <button id="reset"><b>RESET</b></button>
+            <button id="lap"><b>LAP</b></button>
+        </div>
+        <div class="laps">
+            <h2>LAPS</h2>
+            <ul id="lap-list"></ul>
+        </div>
+    </div>
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval;
+        const display = document.getElementById('display');
+        const lapList = document.getElementById('lap-list');
+
+        function startTimer() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTime, 1000);
+            document.getElementById('start').disabled = true;
+            document.getElementById('pause').disabled = false;
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = Date.now() - startTime;
+            document.getElementById('start').disabled = false;
+            document.getElementById('pause').disabled = true;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            display.innerHTML = '00:00:00';
+            lapList.innerHTML = '';
+            document.getElementById('start').disabled = false;
+            document.getElementById('pause').disabled = true;
+        }
+
+        function updateTime() {
+            elapsedTime = Date.now() - startTime;
+            display.innerHTML = timeToString(elapsedTime);
+        }
+
+        function timeToString(time) {
+            let diffInHrs = time / 3600000;
+            let hh = Math.floor(diffInHrs);
+
+            let diffInMin = (diffInHrs - hh) * 60;
+            let mm = Math.floor(diffInMin);
+
+            let diffInSec = (diffInMin - mm) * 60;
+            let ss = Math.floor(diffInSec);
+
+            let formattedHH = hh.toString().padStart(2, "0");
+            let formattedMM = mm.toString().padStart(2, "0");
+            let formattedSS = ss.toString().padStart(2, "0");
+
+            return `${formattedHH}:${formattedMM}:${formattedSS}`;
+        }
+
+        function addLap() {
+            const lapTime = timeToString(elapsedTime);
+            const li = document.createElement('li');
+            li.textContent = lapTime;
+            lapList.appendChild(li);
+            console.log("Lap added:", lapTime); // Debugging line
+        }
+
+        document.getElementById('start').addEventListener('click', startTimer);
+        document.getElementById('pause').addEventListener('click', pauseTimer);
+        document.getElementById('reset').addEventListener('click', resetTimer);
+        document.getElementById('lap').addEventListener('click', addLap);
+    </script>
+</body>
+</html>
