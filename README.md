@@ -26,3 +26,4 @@ This project is a simple stopwatch web application that allows users to start, p
 
 ## Deployment 
 
+https://ashwinibalaji2075.github.io/PRODIGY_WD_02/
